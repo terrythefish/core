@@ -12,6 +12,7 @@ from homeassistant.data_entry_flow import (
     RESULT_TYPE_FORM,
 )
 
+from tests.common import MockConfigEntry
 from tests.components.roku import (
     HOMEKIT_HOST,
     HOST,
