@@ -1,8 +1,9 @@
 """Fixtures for Roku integration tests."""
+from collections.abc import Generator
 import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
-from rokuecp import x
+from rokuecp import Device as RokuDevice
 import pytest
 
 from homeassistant.components.roku.const import DOMAIN
@@ -25,11 +26,30 @@ def mock_config_entry() -> MockConfigEntry:
 
 
 @pytest.fixture
+def mock_roku_config_flow(
+    request: pytest.FixtureRequest,
+) -> Generator[None, MagicMock, None]:
+    """Return a mocked Roku client."""
+    with patch(
+        "homeassistant.components.roku.config_flow.Roku", autospec=True
+    ) as roku_mock:
+        client = roku_mock.return_value
+        client.update.return_value = RokuDevice(json.loads(load_fixture("roku/roku3.json")))
+        yield client
+
+
+@pytest.fixture
 def mock_roku(aioclient_mock: AiohttpClientMocker):
     """Return a mocked Roku client."""
-    with patch("homeassistant.components.roku.Roku") as roku_mock:
+    fixture: str = "roku/roku3.json"
+    if hasattr(request, "param") and request.param:
+        fixture = request.param
+
+    device = RokuDevice.from_dict(json.loads(load_fixture(fixture)))
+    with patch("homeassistant.components.roku.Roku", autospec=True) as roku_mock:
         client = roku_mock.return_value
-        yield roku_mock
+        client.update.return_value = device
+        yield client
 
 
 @pytest.fixture
