@@ -20,7 +20,6 @@ from tests.components.roku import (
     NAME_ROKUTV,
     UPNP_FRIENDLY_NAME,
     mock_connection,
-    setup_integration,
 )
 from tests.test_util.aiohttp import AiohttpClientMocker
 
