@@ -39,7 +39,7 @@ def mock_roku_config_flow(
 
 
 @pytest.fixture
-def mock_roku(aioclient_mock: AiohttpClientMocker):
+def mock_roku(request: pytest.FixtureRequest) -> Generator[None, MagicMock, None]:
     """Return a mocked Roku client."""
     fixture: str = "roku/roku3.json"
     if hasattr(request, "param") and request.param:
