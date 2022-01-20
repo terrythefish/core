@@ -46,7 +46,7 @@ def mock_roku(request: pytest.FixtureRequest) -> Generator[None, MagicMock, None
     if hasattr(request, "param") and request.param:
         fixture = request.param
 
-    device = RokuDevice.from_dict(json.loads(load_fixture(fixture)))
+    device = RokuDevice(json.loads(load_fixture(fixture)))
     with patch("homeassistant.components.roku.Roku", autospec=True) as roku_mock:
         client = roku_mock.return_value
         client.update.return_value = device
