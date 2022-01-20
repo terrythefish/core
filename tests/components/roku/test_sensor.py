@@ -61,9 +61,10 @@ async def test_roku_sensors(
     assert device_entry.sw_version == "7.5.0"
 
 
-@pytest.mark.parametrize("init_integration", ["roku/rokutv-7820x.json"], indirect=True)
+@pytest.mark.parametrize("mock_roku", ["roku/rokutv-7820x.json"], indirect=True)
 async def test_rokutv_sensors(
     hass: HomeAssistant,
+    mock_roku: MagicMock,
     init_integration: MockConfigEntry,
 ) -> None:
     """Test the Roku TV sensors."""
