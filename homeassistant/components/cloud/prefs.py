@@ -1,10 +1,13 @@
 """Preference management for cloud."""
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.auth.const import GROUP_ID_ADMIN
 from homeassistant.auth.models import User
 from homeassistant.components import webhook
 from homeassistant.core import callback
+from homeassistant.helpers import storage
 from homeassistant.helpers.typing import UNDEFINED
 from homeassistant.util.logging import async_create_catching_coro
 
@@ -30,6 +33,7 @@ from .const import (
     PREF_GOOGLE_REPORT_STATE,
     PREF_GOOGLE_SECURE_DEVICES_PIN,
     PREF_OVERRIDE_NAME,
+    PREF_REMOTE_DOMAIN,
     PREF_SHOULD_EXPOSE,
     PREF_TTS_DEFAULT_VOICE,
     PREF_USERNAME,
@@ -37,6 +41,24 @@ from .const import (
 
 STORAGE_KEY = DOMAIN
 STORAGE_VERSION = 1
+STORAGE_VERSION_MINOR = 2
+
+
+class CloudPreferencesStore(storage.Store):
+    """Store entity registry data."""
+
+    async def _async_migrate_func(
+        self, old_major_version: int, old_minor_version: int, old_data: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Migrate to the new version."""
+        if old_major_version == 1:
+            if old_minor_version < 2:
+                # From version 1.1
+                old_data[PREF_REMOTE_DOMAIN] = None
+
+        if old_major_version > 1:
+            raise NotImplementedError
+        return old_data
 
 
 class CloudPreferences:
@@ -45,7 +67,9 @@ class CloudPreferences:
     def __init__(self, hass):
         """Initialize cloud prefs."""
         self._hass = hass
-        self._store = hass.helpers.storage.Store(STORAGE_VERSION, STORAGE_KEY)
+        self._store = CloudPreferencesStore(
+            hass, STORAGE_VERSION, STORAGE_KEY, minor_version=STORAGE_VERSION_MINOR
+        )
         self._prefs = None
         self._listeners = []
 
@@ -85,6 +109,7 @@ class CloudPreferences:
         alexa_default_expose=UNDEFINED,
         google_default_expose=UNDEFINED,
         tts_default_voice=UNDEFINED,
+        remote_domain=UNDEFINED,
     ):
         """Update user preferences."""
         prefs = {**self._prefs}
@@ -103,6 +128,7 @@ class CloudPreferences:
             (PREF_ALEXA_DEFAULT_EXPOSE, alexa_default_expose),
             (PREF_GOOGLE_DEFAULT_EXPOSE, google_default_expose),
             (PREF_TTS_DEFAULT_VOICE, tts_default_voice),
+            (PREF_REMOTE_DOMAIN, remote_domain),
         ):
             if value is not UNDEFINED:
                 prefs[key] = value
@@ -207,6 +233,11 @@ class CloudPreferences:
             return False
 
         return True
+
+    @property
+    def remote_domain(self):
+        """Return remote domain."""
+        return self._prefs[PREF_REMOTE_DOMAIN]
 
     @property
     def alexa_enabled(self):
@@ -321,5 +352,6 @@ class CloudPreferences:
             PREF_GOOGLE_ENTITY_CONFIGS: {},
             PREF_GOOGLE_LOCAL_WEBHOOK_ID: webhook.async_generate_id(),
             PREF_GOOGLE_SECURE_DEVICES_PIN: None,
+            PREF_REMOTE_DOMAIN: None,
             PREF_USERNAME: username,
         }
