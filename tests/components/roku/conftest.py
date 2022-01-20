@@ -6,6 +6,7 @@ from rokuecp import x
 import pytest
 
 from homeassistant.components.roku.const import DOMAIN
+from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 
 from tests.common import MockConfigEntry, load_fixture
@@ -18,8 +19,8 @@ def mock_config_entry() -> MockConfigEntry:
     return MockConfigEntry(
         title="Roku",
         domain=DOMAIN,
-        data={},
-        unique_id="unique",
+        data={CONF_HOST: "192.168.1.160"},
+        unique_id="1GU48T017973",
     )
 
 
