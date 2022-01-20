@@ -8,7 +8,6 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 
 from tests.common import MockConfigEntry
-from tests.components.roku import setup_integration
 
 
 @patch(
