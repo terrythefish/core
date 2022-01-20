@@ -3,8 +3,8 @@ from collections.abc import Generator
 import json
 from unittest.mock import MagicMock, patch
 
-from rokuecp import Device as RokuDevice
 import pytest
+from rokuecp import Device as RokuDevice
 
 from homeassistant.components.roku.const import DOMAIN
 from homeassistant.const import CONF_HOST
