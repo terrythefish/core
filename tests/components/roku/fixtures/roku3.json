@@ -36,7 +36,7 @@
   "app": {
     "#text": "Roku"
   },
-  "apps":[  
+  "apps": [  
     {
       "@id": "11",
       "#text": "Roku Channel Store"
