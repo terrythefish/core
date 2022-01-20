@@ -41,7 +41,7 @@ async def test_duplicate_error(
     assert result["type"] == RESULT_TYPE_ABORT
     assert result["reason"] == "already_configured"
 
-    user_input = {CONF_HOST: HOST}
+    user_input = {CONF_HOST: mock_config_entry.data[CONF_HOST]}
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data=user_input
     )
@@ -58,11 +58,12 @@ async def test_duplicate_error(
     assert result["reason"] == "already_configured"
 
 
-async def test_form(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
+async def test_form(
+    hass: HomeAssistant,
+    mock_roku_config_flow: MagicMock,
+    mock_setup_entry: None,
+) -> None:
     """Test the user step."""
-
-    mock_connection(aioclient_mock)
-
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}
     )
@@ -70,14 +71,10 @@ async def test_form(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) ->
     assert result["errors"] == {}
 
     user_input = {CONF_HOST: HOST}
-    with patch(
-        "homeassistant.components.roku.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
-        result = await hass.config_entries.flow.async_configure(
-            flow_id=result["flow_id"], user_input=user_input
-        )
-        await hass.async_block_till_done()
+    result = await hass.config_entries.flow.async_configure(
+        flow_id=result["flow_id"], user_input=user_input
+    )
+    await hass.async_block_till_done()
 
     assert result["type"] == RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == UPNP_FRIENDLY_NAME
