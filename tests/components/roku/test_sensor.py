@@ -1,4 +1,6 @@
 """Tests for the sensors provided by the Roku integration."""
+from unittest.mock import MagicMock
+
 import pytest
 
 from homeassistant.components.roku.const import DOMAIN
