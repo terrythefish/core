@@ -34,6 +34,7 @@
     "headphones-connected": "false"
   },
   "app": {
+    "#text": "Roku"
   },
   "apps":[  
     {
@@ -72,10 +73,16 @@
       "#text": "Pluto TV - It's Free TV"
     }
   ],
-  "channel": {
-  },
-  "channels": {
-  },
   "media": {
+    "@error": "false",
+    "@state": "close",
+    "format": 
+    {
+      "@audio": "eac3",
+      "@captions": "none",
+      "@drm": "none",
+      "@video": "hevc_b"
+    },
+    "is_live": "false"
   }
 }
