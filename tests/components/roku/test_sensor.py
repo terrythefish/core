@@ -1,5 +1,5 @@
 """Tests for the sensors provided by the Roku integration."""
-impprt pytest
+import pytest
 
 from homeassistant.components.roku.const import DOMAIN
 from homeassistant.const import (
