@@ -7,8 +7,8 @@ from homeassistant.components.roku.const import DOMAIN
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 
+from tests.common import MockConfigEntry
 from tests.components.roku import setup_integration
-from tests.test_util.aiohttp import AiohttpClientMocker
 
 
 @patch(
@@ -37,7 +37,7 @@ async def test_load_unload_config_entry(
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entry.entry_id not in hass.data[DOMAIN]
+    assert mock_config_entry.entry_id not in hass.data[DOMAIN]
     assert mock_config_entry.state is ConfigEntryState.LOADED
 
     await hass.config_entries.async_unload(mock_config_entry.entry_id)
