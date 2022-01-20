@@ -1,6 +1,6 @@
 """Test the Roku config flow."""
 import dataclasses
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from rokuecp import RokuConnectionError
 
@@ -22,7 +22,6 @@ from tests.components.roku import (
     MOCK_SSDP_DISCOVERY_INFO,
     NAME_ROKUTV,
     UPNP_FRIENDLY_NAME,
-    mock_connection,
 )
 
 
@@ -115,7 +114,7 @@ async def test_form_unknown_error(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}
     )
 
-    user_input = {CONF_HOST: HOST}  
+    user_input = {CONF_HOST: HOST}
     result = await hass.config_entries.flow.async_configure(
         flow_id=result["flow_id"], user_input=user_input
     )
