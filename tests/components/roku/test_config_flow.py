@@ -1,6 +1,6 @@
 """Test the Roku config flow."""
 import dataclasses
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from homeassistant.components.roku.const import DOMAIN
 from homeassistant.config_entries import SOURCE_HOMEKIT, SOURCE_SSDP, SOURCE_USER
@@ -26,13 +26,14 @@ from tests.test_util.aiohttp import AiohttpClientMocker
 
 
 async def test_duplicate_error(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_roku_config_flow: MagicMock,
 ) -> None:
     """Test that errors are shown when duplicates are added."""
-    await setup_integration(hass, aioclient_mock, skip_entry_setup=True)
-    mock_connection(aioclient_mock)
+    mock_config_entry.add_to_hass(hass)
 
-    user_input = {CONF_HOST: HOST}
+    user_input = {CONF_HOST: mock_config_entry.data[CONF_HOST]}
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={CONF_SOURCE: SOURCE_USER}, data=user_input
     )
