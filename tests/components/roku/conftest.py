@@ -33,7 +33,9 @@ def mock_roku_config_flow(
         "homeassistant.components.roku.config_flow.Roku", autospec=True
     ) as roku_mock:
         client = roku_mock.return_value
-        client.update.return_value = RokuDevice(json.loads(load_fixture("roku/roku3.json")))
+        client.update.return_value = RokuDevice(
+            json.loads(load_fixture("roku/roku3.json"))
+        )
         yield client
 
 
