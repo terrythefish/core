@@ -64,8 +64,8 @@ async def test_roku_sensors(
 @pytest.mark.parametrize("mock_roku", ["roku/rokutv-7820x.json"], indirect=True)
 async def test_rokutv_sensors(
     hass: HomeAssistant,
-    mock_roku: MagicMock,
     init_integration: MockConfigEntry,
+    mock_roku: MagicMock,
 ) -> None:
     """Test the Roku TV sensors."""
     entity_registry = er.async_get(hass)
